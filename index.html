@@ -41,8 +41,20 @@
     .hero-video {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
-      object-fit: cover; object-position: center;
+      object-fit: cover; object-position: center top;
       pointer-events: none;
+    }
+    @media (max-width: 768px) {
+      .hero-video {
+        object-fit: contain;
+        object-position: center;
+        background: var(--bg);
+      }
+      .hero-fade {
+        background:
+          linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 18%),
+          linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 25%);
+      }
     }
     /* light scrim only at top + bottom for text legibility (subtle, not blurry) */
     .hero-fade {
@@ -130,7 +142,7 @@
 
     .opt {
       display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-      padding: 1.25rem 0.5rem;
+      padding: 0.75rem 0.5rem;
       background: var(--card); border: 1px solid var(--border);
       border-radius: var(--radius); cursor: pointer; text-align: center;
       transition: border-color 0.15s ease, background 0.15s ease;
@@ -138,6 +150,8 @@
     }
     .opt:hover { background: var(--card-hover); }
     .opt.selected { border-color: var(--gold); background: rgba(234,179,8,0.08); }
+    .opt img { width: 100%; max-height: 90px; object-fit: contain; margin-bottom: 0.5rem; }
+    .opt img.white-icon { filter: brightness(0) invert(1); }
     .opt svg { width: 36px; height: 36px; stroke: var(--text); fill: none; stroke-width: 1.8; }
     .opt.selected svg { stroke: var(--gold); }
     .opt .lbl { font-size: 0.85rem; font-weight: 500; }
@@ -196,8 +210,7 @@
     .socials { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1.25rem; }
     .socials .icon-btn { background: transparent; border-color: var(--border); color: var(--muted); }
     .socials .icon-btn:hover { color: var(--text); border-color: #3a3a3a; }
-    footer .email { color: var(--muted); font-size: 0.85rem; text-decoration: none; }
-    footer .email:hover { color: var(--text); }
+    footer .email { display: none; }
     footer .copy { color: #6b7280; font-size: 0.8rem; margin-top: 1rem; }
 
     @media (max-width: 480px) {
@@ -257,7 +270,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
       </a>
     </div>
-    <a href="mailto:hello@vibecar.ua" class="email">hello@vibecar.ua</a>
     <p class="copy">© 2023 VIBECAR</p>
   </footer>
 
@@ -284,34 +296,31 @@
 
     // ===== STEPS =====
     const STEPS = [
-      { key: 'body', title: 'Який тип кузова?', cols: 3, options: [
-        { id: 'sedan', label: 'Седан', icon: 'sedan' },
-        { id: 'hatchback', label: 'Хетчбек', icon: 'hatchback' },
-        { id: 'wagon', label: 'Універсал', icon: 'wagon' },
-        { id: 'crossover', label: 'Кросовер', icon: 'crossover' },
-        { id: 'minivan', label: 'Мінівен', icon: 'minivan' },
-        { id: 'suv', label: 'Позашляховик', icon: 'suv' },
-        { id: 'undecided', label: 'Не визначився', icon: 'help' },
+      { key: 'body', title: 'Який тип кузова?', cols: 2, options: [
+        { id: 'sedan', label: 'Седан', image: 'sedan.png', scale: 1.0 },
+        { id: 'hatchback', label: 'Хетчбек', image: 'hatchback-removebg-preview.png', scale: 1.1 },
+        { id: 'wagon', label: 'Універсал', image: 'wagon.webp', scale: 1.6 },
+        { id: 'crossover', label: 'Кросовер', image: 'crossover-removebg-preview.png', scale: 1.1 },
+        { id: 'minivan', label: 'Мінівен', image: 'van-removebg-preview.png', scale: 1.1 },
+        { id: 'suv', label: 'Позашляховик', image: 'SUV-removebg-preview.png', scale: 1.1 },
       ]},
-      { key: 'fuel', title: 'Яке паливо?', cols: 3, options: [
-        { id: 'gasoline', label: 'Бензин', icon: 'gasoline' },
-        { id: 'diesel', label: 'Дизель', icon: 'diesel' },
-        { id: 'hybrid', label: 'Гібрид', icon: 'hybrid' },
-        { id: 'electric', label: 'Електро', icon: 'electric' },
-        { id: 'plugin', label: 'Плагін-гібрид', icon: 'plugin' },
-        { id: 'undecided', label: 'Не визначився', icon: 'help' },
+      { key: 'fuel', title: 'Яке паливо?', cols: 2, options: [
+        { id: 'gasoline', label: 'Бензин', image: 'gas-station.png', scale: 1.0, white: true },
+        { id: 'diesel', label: 'Дизель', image: 'gas-station.png', scale: 1.0, white: true },
+        { id: 'hybrid', label: 'Гібрид', image: 'hybryd.png', scale: 1.0, white: true },
+        { id: 'electric', label: 'Електро', image: 'electric.png', scale: 1.0, white: true },
       ]},
       { key: 'budget', title: 'Ваш бюджет?', cols: 2, options: [
-        { id: 'up10', label: 'до $10 000', icon: 'fluids' },
-        { id: '10-20', label: '$10 000 – $20 000', icon: 'fluids' },
-        { id: '20-30', label: '$20 000 – $30 000', icon: 'fluids' },
-        { id: '30plus', label: 'від $30 000', icon: 'fluids' },
+        { id: '10-15', label: '$10 000 – $15 000' },
+        { id: '15-20', label: '$15 000 – $20 000' },
+        { id: '20-30', label: '$20 000 – $30 000' },
+        { id: '30plus', label: '$30 000+' },
       ]},
       { key: 'gift', title: 'Подарунок при замовленні?', cols: 2, options: [
-        { id: 'polish', label: 'Полірування', icon: 'polish' },
-        { id: 'clean', label: 'Хімчистка', icon: 'clean' },
-        { id: 'service', label: 'Знижка на сервіс', icon: 'service' },
-        { id: 'fluids', label: 'Рідини й фільтри', icon: 'fluids' },
+        { id: 'polish', label: 'Полірування', image: 'car-polish.png', scale: 1.0, white: true },
+        { id: 'clean', label: 'Хімчистка', image: 'dry-ice-blasting-machine.png', scale: 1.2, white: true },
+        { id: 'mat', label: 'EVA-килимки', image: 'mat.png', scale: 1.0, white: true },
+        { id: 'fluids', label: 'Рідини й фільтри', image: 'filter.png', scale: 1.1, white: true },
       ]},
     ];
 
@@ -340,7 +349,7 @@
       const selected = answers[step.key];
       const opts = step.options.map(o => `
         <div class="opt ${selected === o.id ? 'selected' : ''}" data-id="${o.id}" role="button" tabindex="0">
-          ${ICONS[o.icon] || ''}
+          ${o.image ? `<img src="${o.image}" alt="${o.label}" style="${o.scale ? `transform: scale(${o.scale})` : ''}" class="${o.white ? 'white-icon' : ''}" />` : (ICONS[o.icon] || '')}
           <span class="lbl">${o.label}</span>
         </div>`).join('');
 
