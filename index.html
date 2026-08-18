@@ -45,15 +45,18 @@
       pointer-events: none;
     }
     @media (max-width: 768px) {
+      .hero {
+        min-height: 100dvh;
+        min-height: 100svh; /* full screen including URL bar */
+      }
       .hero-video {
-        object-fit: contain;
-        object-position: center;
-        background: var(--bg);
+        object-fit: cover;
+        object-position: center center;
       }
       .hero-fade {
         background:
-          linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 18%),
-          linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 25%);
+          linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 20%),
+          linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 28%);
       }
     }
     /* light scrim only at top + bottom for text legibility (subtle, not blurry) */
